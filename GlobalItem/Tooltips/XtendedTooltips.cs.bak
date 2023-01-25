@@ -1,0 +1,252 @@
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+// An Experment
+namespace DAMod {
+	public class XtendedTooltips : GlobalItem {
+		public override bool InstancePerEntity { get { return true; } }
+		public override XtendedTooltips Clone(Item item, Item itemClone) => (XtendedTooltips)this.MemberwiseClone();
+
+		Player player => Main.LocalPlayer;
+		static int roundDecimals => Config.Client.ExtendedTooltips ? 3 : Config.Client.DetailedTooltips ? 1 : 0;
+
+		struct ItemStats {
+			public int damage;
+			public int ammoDamage;
+			public int crit;
+			public int useAnimation;
+			public int useTime;
+			public float knockBack;
+			public int mana;
+			public float meleeDPS;
+			public float projectileDPS;
+			public int burst;
+			public int recharge;
+		}
+		ItemStats baseStats;
+		ItemStats newStats;
+
+		public void UpdateLocalStats(Item item) {
+			if (item.type != 0 && item.useTime > 0) {
+				newStats.damage = Functions.Items.GetDamage(item, player);
+				newStats.crit = Functions.Items.GetCrit(item, player);
+				newStats.useTime = Functions.Items.GetUseTime(item, player);
+				newStats.useAnimation = Functions.Items.GetUseAnimation(item, player);
+				newStats.knockBack = Functions.Items.GetKnockBack(item, player);
+				newStats.mana = Functions.Items.GetMana(item, player);
+				newStats.ammoDamage = Functions.Items.GetAmmoDamage(item, player);
+				newStats.meleeDPS = Functions.Items.GetDPS(item, player, true, false, false);
+				newStats.projectileDPS = Functions.Items.GetDPS(item, player, false, false, false);
+				newStats.burst = Functions.Items.GetBurstCount(item, player);
+				newStats.recharge = Functions.Items.GetRechargeTime(item, player);
+			}
+		}
+
+		public void SetLocalBaseStats(Item item) {
+			if (item.type != 0 && item.useTime > 0) {
+				Item baseItem = new Item();
+				baseItem.SetDefaults(item.type);
+				baseItem.Prefix(-3);
+				newStats.damage = Functions.Items.GetDamage(baseItem, player, false);
+				newStats.crit = Functions.Items.GetCrit(baseItem, player, false);
+				newStats.useTime = Functions.Items.GetUseTime(baseItem, player, false);
+				newStats.useAnimation = Functions.Items.GetUseAnimation(baseItem, player, false);
+				newStats.knockBack = Functions.Items.GetKnockBack(baseItem, player, false);
+				newStats.mana = Functions.Items.GetMana(baseItem, player, false);
+				baseStats.ammoDamage = Functions.Items.GetAmmoDamage(baseItem, player, false);
+				baseStats.meleeDPS = Functions.Items.GetDPS(baseItem, player, true, false, false);
+				baseStats.projectileDPS = Functions.Items.GetDPS(baseItem, player, false, false, false);
+				baseStats.burst = Functions.Items.GetBurstCount(baseItem, player, false);
+				baseStats.recharge = Functions.Items.GetRechargeTime(baseItem, player, false);
+			}
+		}
+
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+			// Extended Stat Tooltips
+			if (Config.Client.ExtendedTooltips) {
+				SetLocalBaseStats(item);
+				UpdateLocalStats(item);
+				int index = 0;
+				if ((index = tooltips.FindIndex(t => t.Name == "Damage")) != -1) {
+					float damageDiff = (float)Math.Round(Functions.Math.GetDiffMult(newStats.damage, baseStats.damage), roundDecimals);
+					float ammoDamageDiff = (float)Math.Round(Functions.Math.GetDiffMult(newStats.ammoDamage, baseStats.ammoDamage), roundDecimals);
+
+					if (item.useAmmo > 0 && newStats.ammoDamage != 0) {
+						if (damageDiff != 1 && ammoDamageDiff != 1) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("(({0} * {1}) + ({2} * {3}))", baseStats.damage, damageDiff, baseStats.ammoDamage, ammoDamageDiff), Colors.RarityBlue);
+						}
+						else if (damageDiff != 1) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("(({0} * {1}) + {2})", baseStats.damage, damageDiff, baseStats.ammoDamage), Colors.RarityBlue);
+						}
+						else if (ammoDamageDiff != 1) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} + ({1} * {2}))", baseStats.damage, baseStats.ammoDamage, ammoDamageDiff), Colors.RarityBlue);
+						}
+						else {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} + {1})", baseStats.damage, baseStats.ammoDamage), Colors.RarityBlue);
+						}
+					}
+					else {
+						if (damageDiff != 1) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} * {1})", baseStats.damage, damageDiff), Colors.RarityBlue);
+						}
+					}
+				}
+				if ((index = tooltips.FindIndex(t => t.Name == "CritChance")) != -1) {
+					int critDiff = newStats.crit - item.crit;
+					if (critDiff != 0) {
+						tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("({0} + {1})", item.crit, critDiff), Colors.RarityBlue);
+					}
+				}
+
+				if ((index = tooltips.FindIndex(t => t.Name == "DPS")) != -1) {
+					float critMix = (float)Math.Min(Functions.Math.Mix(1.0, DAMod.critDamageMult, newStats.crit / 100.0), DAMod.critDamageMult);
+					float critMixRound = (float)Math.Round(critMix, roundDecimals);
+					float meleeDPSRound = (float)Math.Round(baseStats.meleeDPS, roundDecimals);
+					float meleeDPSDiff = (float)Math.Round(Functions.Math.GetDiffMult(newStats.meleeDPS, baseStats.meleeDPS), roundDecimals);
+					float projectileDPSRound = (float)Math.Round(baseStats.projectileDPS, roundDecimals);
+					float projectileDPSDiff = (float)Math.Round(Functions.Math.GetDiffMult(newStats.projectileDPS, baseStats.projectileDPS), roundDecimals);
+					// Melee
+					if (!item.noMelee) {
+						// Shoots
+						if (item.shoot > 0) {
+							// Both Diff
+							if (meleeDPSDiff != 1 && projectileDPSDiff != 1) {
+								// Same Diff
+								if (meleeDPSDiff == projectileDPSDiff) {
+									tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("(({0} + {1}) * {2} * {3})", meleeDPSRound, projectileDPSRound, meleeDPSDiff, critMixRound), Colors.RarityBlue);
+								}
+								// Diff
+								else {
+									tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("((({0} * {1}) + ({2} * {3})) * {4})", meleeDPSRound, meleeDPSDiff, projectileDPSRound, projectileDPSDiff, critMixRound), Colors.RarityBlue);
+								}
+							}
+							// Melee Only Diff
+							else if (meleeDPSDiff != 1) {
+								tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("((({0} * {1}) + {2}) * {3})", meleeDPSRound, meleeDPSDiff, projectileDPSRound, critMixRound), Colors.RarityBlue);
+							}
+							// Projectile Only Diff
+							else if (projectileDPSDiff != 1) {
+								tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("(({0} + ({1} * {2}) * {3})", meleeDPSRound, projectileDPSRound, projectileDPSDiff, critMixRound), Colors.RarityBlue);
+							}
+							// Neither Diff
+							else {
+								tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("(({0} + {1}) * {2})", meleeDPSRound, projectileDPSRound, critMixRound), Colors.RarityBlue);
+							}
+						}
+						// Doesn't Shoot
+						else {
+							// Melee Diff
+							if (meleeDPSDiff != 1) {
+								tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("({0} * {1} * {2})", meleeDPSRound, meleeDPSDiff, critMixRound), Colors.RarityBlue);
+							}
+							// No Melee Diff
+							else {
+								tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("({0} * {1})", meleeDPSRound, critMixRound), Colors.RarityBlue);
+							}
+						}
+					}
+					// Not Melee
+					else {
+						// Projectile Diff
+						if (projectileDPSDiff != 1) {
+							tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("({0} * {1} * {2})", projectileDPSRound, projectileDPSDiff, critMixRound), Colors.RarityBlue);
+						}
+						// No Projectile Diff
+						else {
+							tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("({0} * {1})", projectileDPSRound, critMixRound), Colors.RarityBlue);
+						}
+					}
+				}
+
+				if ((index = tooltips.FindIndex(t => t.Name == "Speed")) != -1) { // Should be removed under normal circumstances anyway.
+					float useAnimationDiff = (float)Math.Round(Functions.Math.GetDiffMult(baseStats.useAnimation, newStats.useAnimation), roundDecimals);
+					float useTimeDiff = (float)Math.Round(Functions.Math.GetDiffMult(baseStats.useTime, newStats.useTime), roundDecimals);
+					if (useAnimationDiff != 1 && useTimeDiff != 1) {
+						if (useAnimationDiff == useTimeDiff) {
+							if (baseStats.useAnimation != baseStats.useTime) {
+								tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("(({0} | {1}) / {2})", baseStats.useAnimation, useAnimationDiff, baseStats.useTime), Colors.RarityBlue);
+							}
+							else {
+								tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} / {1})", baseStats.useAnimation, useAnimationDiff), Colors.RarityBlue);
+							}
+						}
+						else {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("(({0} / {1}) | ({2} / {3}))", baseStats.useAnimation, useAnimationDiff, baseStats.useTime, useTimeDiff), Colors.RarityBlue);
+						}
+					}
+					else {
+						if (useAnimationDiff != 1) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("(({0} / {1}) | {2})", baseStats.useAnimation, useAnimationDiff, baseStats.useTime), Colors.RarityBlue);
+						}
+						else if (useTimeDiff != 1) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("(({0}) | ({1} / {2}))", baseStats.useAnimation, baseStats.useTime, useTimeDiff), Colors.RarityBlue);
+						}
+						else if (baseStats.useAnimation != baseStats.useTime) {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} | {1})", baseStats.useAnimation, baseStats.useTime), Colors.RarityBlue);
+						}
+						else {
+							tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0})", baseStats.useAnimation), Colors.RarityBlue);
+						}
+					}
+				}
+
+				if ((index = tooltips.FindIndex(t => t.Name == "UseAnimation")) != -1) {
+					float useAnimationDiff = (float)Math.Round(Functions.Math.GetDiffMult(baseStats.useAnimation, newStats.useAnimation), roundDecimals);
+					if (useAnimationDiff != 1) {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} * {1})", baseStats.useAnimation, useAnimationDiff), Colors.RarityBlue);
+					}
+					else {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0})", baseStats.useAnimation), Colors.RarityBlue);
+					}
+				}
+
+				if ((index = tooltips.FindIndex(t => t.Name == "UseTime")) != -1) {
+					float useTimeDiff = (float)Math.Round(Functions.Math.GetDiffMult(baseStats.useTime, newStats.useTime), roundDecimals);
+					if (useTimeDiff != 1) {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} * {1})", baseStats.useTime, useTimeDiff), Colors.RarityBlue);
+					}
+					else {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0})", baseStats.useTime), Colors.RarityBlue);
+					}
+				}
+
+				if ((index = tooltips.FindIndex(t => t.Name == "ReuseDelay")) != -1) {
+					tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0})", item.reuseDelay), Colors.RarityBlue);
+				}
+
+				if ((index = tooltips.FindIndex(t => t.Name == "Burst")) != -1) {
+					int burstDiff = newStats.burst - baseStats.burst;
+					if (burstDiff != 0) {
+						tooltips[index].Text +=  " " + Functions.Colors.ColorString(string.Format("({0} + {1})", baseStats.burst, burstDiff), Colors.RarityBlue);
+					}
+				}
+				if ((index = tooltips.FindIndex(t => t.Name == "Recharge")) != -1) {
+					float rechargeDiff = (float)Math.Round(Functions.Math.GetDiffMult(baseStats.recharge, newStats.recharge), roundDecimals);
+					if (rechargeDiff != 1) {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} / {1})", baseStats.recharge, rechargeDiff), Colors.RarityBlue);
+					}
+					else {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0})", baseStats.recharge), Colors.RarityBlue);
+					}
+				}
+				if ((index = tooltips.FindIndex(t => t.Name == "Knockback")) != -1) {
+					float knockBackDiff = (float)Math.Round(Functions.Math.GetDiffMult(newStats.knockBack, baseStats.knockBack), roundDecimals);
+					if (knockBackDiff != 1) {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} * {1})", baseStats.knockBack, knockBackDiff), Colors.RarityBlue);
+					}
+					else if (!Config.Client.DetailedTooltips) {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0})", baseStats.knockBack), Colors.RarityBlue);
+					}
+				}
+				if ((index = tooltips.FindIndex(t => t.Name == "UseMana")) != -1) {
+					float manaDiff = (float)Math.Round(Functions.Math.GetDiffMult(newStats.mana, baseStats.mana), roundDecimals);
+					if (manaDiff != 1) {
+						tooltips[index].Text += " " + Functions.Colors.ColorString(string.Format("({0} * {1})", baseStats.mana, manaDiff), Colors.RarityBlue);
+					}
+				}
+			}
+		}
+	}
+}

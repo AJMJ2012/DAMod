@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ModLoader;
+
+namespace DAMod {
+	public class DPSTooltip : GlobalItem {
+		static Player player => Main.LocalPlayer;
+		static int roundDecimals => Config.Client.ExtendedTooltips ? 3 : Config.Client.DetailedTooltips ? 1 : 0;
+
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+			// DPS tooltip for non minion/sentry weapons
+			int index = 0;
+			if (item.useStyle > 0 && item.damage > 0 && !item.channel && ((index = tooltips.FindIndex(t => t.Name == "AmmoDamage")) != -1 || (index = tooltips.FindIndex(t => t.Name == "Damage")) != -1)) {
+				Projectile projectile = new Projectile();
+				projectile.SetDefaults(item.shoot);
+				if (projectile.minionSlots == 0 && !projectile.sentry) {
+					float meleeDPSRound = (float)Math.Round(Functions.Items.GetDPS(item, player, true), roundDecimals);
+					float projectileDPSRound = (float)Math.Round(Functions.Items.GetDPS(item, player, false), roundDecimals);
+					tooltips.Insert(index+1, new TooltipLine(Mod, "DPS", string.Format("{0} DPS", !item.noMelee ? item.shoot > 0 ? string.Format("{0} + {1}", meleeDPSRound, projectileDPSRound) : meleeDPSRound : projectileDPSRound)));
+				}
+			}
+			// Remove any existing DPS tooltip from any other mod
+			tooltips.RemoveAll(t => t.Mod != Mod.Name && t.Name.Equals("DPS", StringComparison.OrdinalIgnoreCase));
+		}
+	}
+}
