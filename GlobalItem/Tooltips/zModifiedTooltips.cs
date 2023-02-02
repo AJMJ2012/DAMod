@@ -1,11 +1,12 @@
 using Microsoft.Xna.Framework;
-using StringExtensions;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+
+using DALib.Extensions;
 
 namespace DAMod {
 	public class zModifiedTooltips : GlobalItem {

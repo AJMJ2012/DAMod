@@ -1,11 +1,12 @@
 using Microsoft.Xna.Framework;
-using StringExtensions;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+
+using DALib.Checks;
 
 namespace DAMod {
 	public class _ItemEdits : GlobalItem {
@@ -62,7 +63,7 @@ namespace DAMod {
 			}
 
 			// Increase ammo stack
-			if (item.ammo > 0 && !item.notAmmo) {
+			if (item.IsNormalAmmo()) {
 				item.maxStack = 9999;
 			}
 
@@ -123,7 +124,7 @@ namespace DAMod {
 			}
 
 			// Ammo is has no damage class if it can't be used.
-			if (item.ammo > 0 && item.useStyle == 0) {
+			if (item.IsNonUseableAmmo()) {
 				item.DamageType = DamageClass.Default;
 			}
 
@@ -149,12 +150,12 @@ namespace DAMod {
 
 			// Tools are only as fast as their animation
 			// But elsewhere I made them hit twice
-			if (item.pick > 0 || item.axe > 0 || item.hammer > 0) {
+			if (item.IsDestructiveTool()) {
 				item.useTime = item.useAnimation;
 			}
 
 			// Tools are generic
-			if (item.pick > 0 || item.axe > 0 || item.hammer > 0){
+			if (item.IsDestructiveTool()){
 				item.DamageType = DamageClass.Generic;
 			}
 		}
