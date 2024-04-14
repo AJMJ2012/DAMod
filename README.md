@@ -17,7 +17,7 @@ Changes:
 * Favourite, Vanity, Expert, Master, and Quest tooltips are now coloured
 * Added mod name tooltips
 * Informational accessories can no longer be equipped
-* Magic Dagger have auto reuse and +2 seconds to use times
+* Magic Dagger have auto reuse and +2 tics to use times
 * All accessories can be placed into vanity slots
 * Rain Cloud style weapons now deal summon damage
 * Ammo max stacks increased to 9999
@@ -29,7 +29,7 @@ Changes:
 * Crossbows are 2x slower but 2x more powerful
 * Bows are 1.5x slower but 1.5x more powerful
 * Most ammo now no longer has a damage class
-* Melee weapons have auto reuse
+* Melee weapons have auto reuse and auto turn
 * Space Gun no longer uses that horrible sound
 * Max stacks are rounded out to the next 5
 * Throwing weapons now use a fast swing animation with a reuse delay
@@ -51,23 +51,22 @@ Changes:
 * Overlay map's default zoom is 300% rather than the default 250%
 * Recipes are re-sorted
 	* May need feedback on this
+	* Only if Recipe Browser is not installed
 * Loading mods will now show what mods are adding recipes
 * Loading mods will now show what mods are doing extra stuff after adding recipes
 * Summon weapons will now show their speed
 * The amount of light a tile absorbs is configurable
-	* 100% is great with the Fancy Lighting mod
+	* 100% is pretty much 1 tile
 	* 0% is vanilla values
 * You can choose your preferred music choice on world load
-* You autojoin a team of your choice when joining a server
+* You can autojoin a team of your choice when joining a server
 * Fixed reuse delay playing the swinging animations again
 * You can now configure the NPC smoothing range in game
 * You can now configure the team name plate distance in game
 * Admins can now configure the NPC stream speed for servers in game
 * Increased NPC spawn and despawn distance to 160x135 from 120x68
-* Increased NPC spawn rate by 2x to compensate
-* You can now open the resource packs menu in game using a key bind
-	* This feature may be unstable but it seems to be more stable in later TML builds
-	* Note that if you get stuck, you can do an emergency close with the inventory button
+* Increased NPC spawn rate and max spawns by 2x to compensate
+* You will auto join your last team when joining a server
 
 WIP:
 * Super detailed tooltips
@@ -75,8 +74,7 @@ WIP:
 
 TODO:
 * Configure more things
-* Add resource packs menu to the in-game menu
 * Add NPC smoothing range and team name plate distance to the in-game menu
-* Fix resource packs menu not reloading tile assets without going back in and re-ordering something
 * Move some things out into their own mods
 * Whatever else I can think of that may be too niche or small for it's own mod
+* Fix sorting recipes breaking Recipe Browser

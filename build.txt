@@ -1,4 +1,6 @@
 ﻿author = Dark-Assassin
 displayName = Dark Assassin's Mod
-version = 1.0.1
+version = 1.1
 modReferences = DALib@1.4
+weakReferences = FancyLighting
+sortAfter = TerrariaOverhaul
