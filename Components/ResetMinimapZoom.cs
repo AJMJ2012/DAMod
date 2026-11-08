@@ -13,12 +13,7 @@ class ResetMinimapZoom : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(MinimapFrame_ResetZoom_Method, Override_MinimapFrame_ResetZoom);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(MinimapFrame_ResetZoom_Method, Override_MinimapFrame_ResetZoom);
+		MonoModHooks.Add(MinimapFrame_ResetZoom_Method, Override_MinimapFrame_ResetZoom);
 	}
 
 	// Reset minimap zoom to Main.mapMinimapDefaultScale

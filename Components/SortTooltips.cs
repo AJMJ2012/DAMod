@@ -1,9 +1,10 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoMod.RuntimeDetour.HookGen;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -12,22 +13,17 @@ namespace DAMod.Components;
 class ItemLoader_SortTooltips : ModSystem
 {
     static readonly MethodInfo ModifyTooltips_Method = typeof(ItemLoader).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Static);
-    delegate List<TooltipLine> ModifyTooltips_Delegate(Item item, ref int numTooltips, string[] names, ref string[] text, ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor);
+    delegate List<TooltipLine> ModifyTooltips_Delegate(Item item, ref int numTooltips, string[] names, ref string[] text, ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor, int prefixlineIndex);
 
     public override void Load()
 	{
-		HookEndpointManager.Add(ModifyTooltips_Method, Override_ModifyTooltips);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(ModifyTooltips_Method, Override_ModifyTooltips);
+		MonoModHooks.Add(ModifyTooltips_Method, Override_ModifyTooltips);
 	}
 
 	// Sort Vanilla Tooltips
 	// Add Separators
 	// Should use IL
-	static List<TooltipLine> Override_ModifyTooltips(ModifyTooltips_Delegate ModifyTooltips, Item item, ref int numTooltips, string[] names, ref string[] text, ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor)
+	static List<TooltipLine> Override_ModifyTooltips(ModifyTooltips_Delegate ModifyTooltips, Item item, ref int numTooltips, string[] names, ref string[] text, ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor, int prefixlineIndex)
 	{
 		List<TooltipLine> tooltips = new();
 		for (int j = 0; j < numTooltips; j++)
@@ -41,14 +37,25 @@ class ItemLoader_SortTooltips : ModSystem
 			}
 			tooltips.Add(tooltip);
 		}
+		if (item.prefix >= PrefixID.Count && prefixlineIndex != -1)
+		{
+			IEnumerable<TooltipLine> tooltipLines = PrefixLoader.GetPrefix(item.prefix)?.GetTooltipLines(item);
+			if (tooltipLines != null)
+			{
+				foreach (TooltipLine line in tooltipLines)
+				{
+					tooltips.Insert(prefixlineIndex, line);
+					prefixlineIndex++;
+				}
+			}
+		}
 
 		// Sort vanilla tooltips
 		tooltips = TooltipSorter.Sort(tooltips);
-
 		item.ModItem?.ModifyTooltips(tooltips);
 		if (!item.IsAir)
 		{
-			HookList<GlobalItem>.InstanceEnumerator enumerator = ((HookList<GlobalItem>)typeof(ItemLoader).GetField("HookModifyTooltips", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).Enumerate((Instanced<GlobalItem>[])item.GetType().GetField("globalItems", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(item)).GetEnumerator();
+			EntityGlobalsEnumerator<GlobalItem> enumerator = ((GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField("HookModifyTooltips", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).Enumerate(item).GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				enumerator.Current.ModifyTooltips(item, tooltips);
@@ -87,6 +94,7 @@ class ItemLoader_SortTooltips : ModSystem
 			}
 		}*/
 
+		tooltips.RemoveAll((TooltipLine x) => !x.Visible);
 		numTooltips = tooltips.Count;
 		text = new string[numTooltips];
 		modifier = new bool[numTooltips];

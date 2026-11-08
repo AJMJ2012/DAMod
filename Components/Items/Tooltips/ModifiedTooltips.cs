@@ -59,9 +59,9 @@ public class ModifiedTooltips : GlobalItem
 
             tooltips[index].Text = string.Format("{0}{1}", damage, Lang.tip[55]);
 
-            string damageType = item.DamageType.Type > 1 ? item.DamageType.DisplayName.Replace(" damage", "").FirstCharToUpper() : "Generic";
+            string damageType = item.DamageType.Type > 1 ? item.DamageType.DisplayName.ToString().Replace(" damage", "").FirstCharToUpper() : "Generic";
             // Secrets of the Shadow Void Magic translation fix
-			if (item.ModItem != null) if (item.ModItem.Mod.Name == "SOTS" && item.DamageType.DisplayName == "Mods.SOTS.DamageClassName.VoidMagic") damageType = "Void Magic";
+			if (item.ModItem != null) if (item.ModItem.Mod.Name == "SOTS" && item.DamageType.DisplayName.ToString() == "Mods.SOTS.DamageClassName.VoidMagic") damageType = "Void Magic";
 
 			if (!ClassColors.TryGetValue(damageType, out Color damageColor))
             {

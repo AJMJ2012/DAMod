@@ -12,12 +12,7 @@ class PostAddRecipes : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(PostAddRecipes_Method, Override_PostAddRecipes);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(PostAddRecipes_Method, Override_PostAddRecipes);
+		MonoModHooks.Add(PostAddRecipes_Method, Override_PostAddRecipes);
 	}
 
 	// Show what mods are setting up

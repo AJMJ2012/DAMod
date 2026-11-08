@@ -12,12 +12,7 @@ class SummonDamageClass_ShowStatTooltipLine : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(ShowStatTooltipLine_Method, Override_ShowStatTooltipLine);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(ShowStatTooltipLine_Method, Override_ShowStatTooltipLine);
+		MonoModHooks.Add(ShowStatTooltipLine_Method, Override_ShowStatTooltipLine);
 	}
 
 	// Show speed for summon weapons

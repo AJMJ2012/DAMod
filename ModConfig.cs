@@ -18,33 +18,29 @@ public class ConfigEnforcer : ModSystem
     }
 }
 
-[Label("Client Config")]
 public class ClientConfig : ModConfig {
 	public override ConfigScope Mode => ConfigScope.ClientSide;
 	public static ClientConfig Instance;
 
 
 	[Header("Tooltips")]
-	[Label("Detailed Tooltips")]
-	[Tooltip("Shows details on some tooltips")]
+
 	[DefaultValue(false)]
 	public bool DetailedTooltips = false;
 
 	//[Label("Extended Tooltips")]
-	//[Tooltip("Shows extended details on stat based tooltips")]
-	//[DefaultValue(false)]
 	//public bool ExtendedTooltips => false;
 
 
 	[Header("Music")]
-	[Label("Default Music Mode")]
-	[Tooltip("Only applies on load for now")]
+
     [DefaultValue(MusicMode.Default)]
     [DrawTicks]
     public MusicMode MusicMode = MusicMode.Default;
 
+
 	[Header("Visual")]
-	[Label("Tile Light Absorption %")]
+
 	[DefaultValue(50)]
 	[Range(0, 100)]
 	[Increment(1)]
@@ -53,56 +49,56 @@ public class ClientConfig : ModConfig {
 
 
 	[Header("Gameplay")]
-	[Label("Enable Lock On system for keyboard + mouse")]
+
     [DefaultValue(false)]
     public bool EnableLockOn = false;
 
-	[Label("Allowed by Server")]
 	[JsonIgnore]
 	public bool LockOnAllowed;
 
 
     [Header("UI")]
-    [Label("Link UI Scale to Zoom")]
+
     [DefaultValue(false)]
     public bool LinkUIScale = false;
 
+
     [Header("Multiplayer")]
 
-	[Label("NPC Smoothing Range")]
 	[DefaultValue(300)]
 	[Range(0, 600)]
 	public int MultiplayerNPCSmoothingRange = 300;
 
-	[Label("Team Name Plate Distance")]
 	[DefaultValue(2000)]
 	[Range(0, 16800)]
 	public int TeamNamePlateDistance = 2000;
+
+
 	public override void OnChanged() {
 		Main.multiplayerNPCSmoothingRange = MultiplayerNPCSmoothingRange;
 		Main.teamNamePlateDistance = TeamNamePlateDistance;
 	}
 }
 
-[Label("Server Config")]
 public class ServerConfig : ModConfig {
 	public override ConfigScope Mode => ConfigScope.ServerSide;
 	public static ServerConfig Instance;
 
+
 	[Header("Networking")]
-	[Label("NPC Stream Speed")]
-	[Tooltip("Server Only")]
+
 	[DefaultValue(30)]
 	[Range(1, 60)]
 	[Increment(1)]
 	[Slider]
 	public int NPCStreamSpeed = 30;
 
+
 	[Header("Gameplay")]
-	[Label("Enable Lock On system for keyboard + mouse")]
-	[Tooltip("Server Only")]
+
     [DefaultValue(false)]
     public bool EnableLockOn = false;
+
 
 	public override void OnChanged() {
 		Main.npcStreamSpeed = NPCStreamSpeed;

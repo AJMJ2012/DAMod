@@ -11,12 +11,7 @@ class SystemLoader_ModifyLightingBrightness : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(ModifyLightingBrightness_Method, Override_ModifyLightingBrightness);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(ModifyLightingBrightness_Method, Override_ModifyLightingBrightness);
+		MonoModHooks.Add(ModifyLightingBrightness_Method, Override_ModifyLightingBrightness);
 	}
 
 	// Decrease light bleed through tiles

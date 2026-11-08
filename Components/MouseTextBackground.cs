@@ -15,12 +15,7 @@ class MouseTextBackground : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(Main_DrawPendingMouseText_Method, Override_Main_DrawPendingMouseText);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(Main_DrawPendingMouseText_Method, Override_Main_DrawPendingMouseText);
+		MonoModHooks.Add(Main_DrawPendingMouseText_Method, Override_Main_DrawPendingMouseText);
 	}
 
 	static void Override_Main_DrawPendingMouseText(Main_DrawPendingMouseText_Delegate DrawPendingMouseText)

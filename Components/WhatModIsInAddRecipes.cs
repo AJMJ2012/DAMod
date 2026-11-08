@@ -13,12 +13,7 @@ class RecipeLoader_AddRecipes : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(AddRecipes_Method, Override_AddRecipes);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(AddRecipes_Method, Override_AddRecipes);
+		MonoModHooks.Add(AddRecipes_Method, Override_AddRecipes);
 	}
 
 	// Show what mods are adding recipes

@@ -18,14 +18,8 @@ class BetterLockOnTargeting : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(LockOnHelper_GetClosestTarget_Method, Override_LockOnHelper_GetClosestTarget);
-        HookEndpointManager.Add(LockOnHelper_ValidTarget_Method, Override_LockOnHelper_ValidTarget);
-    }
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(LockOnHelper_GetClosestTarget_Method, Override_LockOnHelper_GetClosestTarget);
-        HookEndpointManager.Remove(LockOnHelper_ValidTarget_Method, Override_LockOnHelper_ValidTarget);
+		MonoModHooks.Add(LockOnHelper_GetClosestTarget_Method, Override_LockOnHelper_GetClosestTarget);
+        MonoModHooks.Add(LockOnHelper_ValidTarget_Method, Override_LockOnHelper_ValidTarget);
     }
     // Get closest target to player when smart cursor is enabled
     static void Override_LockOnHelper_GetClosestTarget(LockOnHelper_GetClosestTarget_Delegate GetClosestTarget, Vector2 position)

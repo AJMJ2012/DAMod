@@ -12,12 +12,7 @@ class Recipe_FindRecipes : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(FindRecipes_Method, Override_FindRecipes);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(FindRecipes_Method, Override_FindRecipes);
+		MonoModHooks.Add(FindRecipes_Method, Override_FindRecipes);
 	}
 
 	// Sort recipes

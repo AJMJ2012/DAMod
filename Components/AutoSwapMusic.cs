@@ -10,7 +10,7 @@ class AutoSwapMusic : ModPlayer
 	bool inGame = false;
 
 	// Can't set the music here
-	public override void OnEnterWorld(Player player)
+	public override void OnEnterWorld()
 	{
 		inGame = true;
 		setMusic = false;

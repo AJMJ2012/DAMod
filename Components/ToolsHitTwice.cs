@@ -12,12 +12,7 @@ class ToolsHitTwice : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(Player_ItemCheck_UseMiningTools_ActuallyUseMiningTool_Method, Override_Player_ItemCheck_UseMiningTools_ActuallyUseMiningTool);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(Player_ItemCheck_UseMiningTools_ActuallyUseMiningTool_Method, Override_Player_ItemCheck_UseMiningTools_ActuallyUseMiningTool);
+		MonoModHooks.Add(Player_ItemCheck_UseMiningTools_ActuallyUseMiningTool_Method, Override_Player_ItemCheck_UseMiningTools_ActuallyUseMiningTool);
 	}
 
 	// Tools hit twice

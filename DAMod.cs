@@ -15,7 +15,7 @@ public class DAMod : Mod {
 
 	public override void Load() {
 		instance = this;
-		lockOnKey = KeybindLoader.RegisterKeybind(this, "Lock On", "Q");
+		lockOnKey = KeybindLoader.RegisterKeybind(this, "LockOn", "Q");
         {
             SetSpawnRange(2560,2160); // x1.5,x2.0
 			SetSpwanRate(300); // x0.5 (x2)
@@ -42,10 +42,6 @@ public class DAMod : Mod {
 			Main.mapOverlayScale = 2.5f;
 		}
 		instance = null;
-
-		MessageBox.Show("Due to tModLoader not unloading certain IL edits from "+(this.DisplayName)+", tModLoader needs to be restarted.\n\nIf you are attempting to join a server, it is best you skip mod loading before joining.\nHold the 'Shift' key at the splash screen until you are at the main menu.\n\nPress OK to restart.", "tModLoader - " + this.DisplayName);
-		Process.Start(Environment.ProcessPath, Environment.CommandLine);
-		Environment.Exit(0);
 	}
 
 	internal static void SetSpawnRange(int sWidth, int sHeight) {

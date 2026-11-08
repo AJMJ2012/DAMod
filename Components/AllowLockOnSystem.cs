@@ -15,12 +15,7 @@ class AllowLockOnSystem : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(LockOnHelper_CanUseLockonSystem_Method, Override_LockOnHelper_CanUseLockonSystem);
-	}
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(LockOnHelper_CanUseLockonSystem_Method, Override_LockOnHelper_CanUseLockonSystem);
+		MonoModHooks.Add(LockOnHelper_CanUseLockonSystem_Method, Override_LockOnHelper_CanUseLockonSystem);
 	}
 
     // Allow lock on system when using a keyboard and mouse and if enabled

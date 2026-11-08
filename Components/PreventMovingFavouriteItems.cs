@@ -19,16 +19,9 @@ class PreventMovingFavouriteItems : ModSystem
 
     public override void Load()
 	{
-		HookEndpointManager.Add(ItemSorting_FillAmmoFromInventory_Method, Override_ItemSorting_FillAmmoFromInventory);
-        HookEndpointManager.Add(ItemSorting_RefillItemStack_Method, Override_ItemSorting_RefillItemStack);
-        HookEndpointManager.Add(ItemSorting_TrySlidingUp_Method, Override_ItemSorting_TrySlidingUp);
-    }
-
-	public override void Unload()
-	{
-		HookEndpointManager.Remove(ItemSorting_FillAmmoFromInventory_Method, Override_ItemSorting_FillAmmoFromInventory);
-        HookEndpointManager.Remove(ItemSorting_RefillItemStack_Method, Override_ItemSorting_RefillItemStack);
-        HookEndpointManager.Remove(ItemSorting_TrySlidingUp_Method, Override_ItemSorting_TrySlidingUp);
+		MonoModHooks.Add(ItemSorting_FillAmmoFromInventory_Method, Override_ItemSorting_FillAmmoFromInventory);
+        MonoModHooks.Add(ItemSorting_RefillItemStack_Method, Override_ItemSorting_RefillItemStack);
+        MonoModHooks.Add(ItemSorting_TrySlidingUp_Method, Override_ItemSorting_TrySlidingUp);
     }
 
 	// Don't refill from favourited ammo

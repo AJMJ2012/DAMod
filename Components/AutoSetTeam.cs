@@ -12,7 +12,7 @@ class AutoSetTeam : ModPlayer
 	int team = 0;
 
 	// Can't set the team here
-	public override void OnEnterWorld(Player player)
+	public override void OnEnterWorld()
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient) return;
 		inGame = true;

@@ -1,0 +1,87 @@
+Configs: {
+	ClientConfig: {
+		DisplayName: Client Config
+
+		Headers: {
+			Tooltips: Tooltips
+			Music: Music
+			Visual: Visual
+			Gameplay: Gameplay
+			UI: UI
+			Multiplayer: Multiplayer
+		}
+
+		DetailedTooltips: {
+			Label: Detailed Tooltips
+			Tooltip: Shows details on some tooltips
+		}
+
+		ExtendedTooltips: {
+			Label: Extended Tooltips
+			Tooltip: Shows extended details on stat based tooltips
+		}
+
+		MusicMode: {
+			Label: Default Music Mode
+			Tooltip: Only applies on load for now
+		}
+
+		TileLightAbsorption: {
+			Label: Tile Light Absorption %
+			Tooltip: ""
+		}
+
+		EnableLockOn: {
+			Label: Enable Lock On system for keyboard + mouse
+			Tooltip: ""
+		}
+
+		LockOnAllowed: {
+			Label: Allowed by Server
+			Tooltip: ""
+		}
+
+		LinkUIScale: {
+			Label: Link UI Scale to Zoom
+			Tooltip: ""
+		}
+
+		MultiplayerNPCSmoothingRange: {
+			Label: NPC Smoothing Range
+			Tooltip: ""
+		}
+
+		TeamNamePlateDistance: {
+			Label: Team Name Plate Distance
+			Tooltip: ""
+		}
+	}
+
+	ServerConfig: {
+		DisplayName: Server Config
+
+		Headers: {
+			Networking: Networking
+			Gameplay: Gameplay
+		}
+
+		NPCStreamSpeed: {
+			Label: NPC Stream Speed
+			Tooltip: Server Only
+		}
+
+		EnableLockOn: {
+			Tooltip: Server Only
+			Label: Enable Lock On system for keyboard + mouse
+		}
+	}
+
+	MusicMode: {
+		Default.Label: Default
+		Original.Label: Original
+		Otherworld.Label: Otherworld
+		Tooltip: ""
+	}
+}
+
+Keybinds.LockOn.DisplayName: Lock On
