@@ -58,8 +58,7 @@ public class ModifiedTooltips : GlobalItem
             }
 
             tooltips[index].Text = string.Format("{0}{1}", damage, Lang.tip[55]);
-
-            string damageType = item.DamageType.Type > 1 ? item.DamageType.DisplayName.ToString().Replace(" damage", "").FirstCharToUpper() : "Generic";
+            string damageType = item.DamageType.Type > 1 ? item.DamageType.DisplayName.ToString().Replace(" damage", "").Trim().FirstCharToUpper() : "Generic";
             // Secrets of the Shadow Void Magic translation fix
 			if (item.ModItem != null) if (item.ModItem.Mod.Name == "SOTS" && item.DamageType.DisplayName.ToString() == "Mods.SOTS.DamageClassName.VoidMagic") damageType = "Void Magic";
 
@@ -133,7 +132,7 @@ public class ModifiedTooltips : GlobalItem
         {
             tooltips[index].OverrideColor = Colors.RarityAmber;
         }
-
+/*
         // Mod Name tooltip
         if (ModContent.GetModItem(item.type) != null)
         {
@@ -144,7 +143,7 @@ public class ModifiedTooltips : GlobalItem
             tooltip.OverrideColor = new Vector4(num % 360 / 360f, 1.0f, 0.90f, 1f).ToRGB();
             tooltips.Add(tooltip);
         }
-
+*/
         //	// Remove thorium class tags
         //	tooltips.RemoveAll(t => t.Name == "BardTag");
         //	tooltips.RemoveAll(t => t.Name == "HealerTag");

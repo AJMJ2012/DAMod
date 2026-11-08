@@ -4,21 +4,13 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Newtonsoft.Json;
+using System.Reflection;
+using DAMod.Components;
 
 namespace DAMod;
 
-public class ConfigEnforcer : ModSystem
+public class ClientConfig : ModConfig
 {
-    public override void PostUpdateEverything()
-    {
-		// Can't use a property as they are sorted after fields...
-        Config.Client.LockOnAllowed = (Main.netMode == NetmodeID.SinglePlayer) || (Main.netMode == NetmodeID.MultiplayerClient && Config.Server.EnableLockOn);
-    }
-}
-
-public class ClientConfig : ModConfig {
 	public override ConfigScope Mode => ConfigScope.ClientSide;
 	public static ClientConfig Instance;
 
@@ -34,53 +26,88 @@ public class ClientConfig : ModConfig {
 
 	[Header("Music")]
 
-    [DefaultValue(MusicMode.Default)]
-    [DrawTicks]
-    public MusicMode MusicMode = MusicMode.Default;
+	[DefaultValue(MusicMode.Default)]
+	[DrawTicks]
+	public MusicMode DefaultMusicMode = MusicMode.Default;
 
+	[DefaultValue(false)]
+	public bool ChangeMusic = false;
+
+	[Header("Music")]
+	public bool UsingOtherworldMusic
+	{
+		get
+		{
+			return !Main.swapMusic && Main.drunkWorld && !Main.remixWorld || Main.swapMusic && !Main.drunkWorld;
+		}
+	}
 
 	[Header("Visual")]
 
-	[DefaultValue(50)]
-	[Range(0, 100)]
-	[Increment(1)]
+	[DefaultValue(33f)]
+	[Range(0f, 100f)]
+	[Increment(1f)]
 	[Slider]
-	public int TileLightAbsorption = 50;
+	public float TileLightAbsorption = 33f;
 
 
 	[Header("Gameplay")]
 
-    [DefaultValue(false)]
-    public bool EnableLockOn = false;
+	[DefaultValue(false)]
+	public bool EnableLockOn = false;
 
-	[JsonIgnore]
-	public bool LockOnAllowed;
+	[Header("Gameplay")]
+	public bool LockOnAllowed {
+		get
+		{
+			return (Main.netMode == NetmodeID.SinglePlayer) || (Main.netMode == NetmodeID.MultiplayerClient && Config.Server.EnableLockOn);
+		}
+	}
 
+	[Header("UI")]
 
-    [Header("UI")]
+	[DefaultValue(false)]
+	public bool LinkUIScale = false;
 
-    [DefaultValue(false)]
-    public bool LinkUIScale = false;
-
-
-    [Header("Multiplayer")]
-
-	[DefaultValue(300)]
-	[Range(0, 600)]
-	public int MultiplayerNPCSmoothingRange = 300;
-
-	[DefaultValue(2000)]
-	[Range(0, 16800)]
-	public int TeamNamePlateDistance = 2000;
+	[DefaultValue(RecipeSort.Yes)]
+	public RecipeSort SortRecipes = RecipeSort.Yes;
 
 
-	public override void OnChanged() {
+	[Header("Multiplayer")]
+
+	[DefaultValue(480)]
+	[Range(0, 1920)]
+	[Increment(120)]
+	[Slider]
+	public int MultiplayerNPCSmoothingRange = 480;
+
+	[DefaultValue(19200)]
+	[Range(0, 19200)]
+	[Increment(1920)]
+	[Slider]
+	public int TeamNamePlateDistance = 19200;
+
+
+	public override void OnLoaded() => UpdateConfig();
+	public override void OnChanged() => UpdateConfig();
+
+	public void UpdateConfig()
+	{
 		Main.multiplayerNPCSmoothingRange = MultiplayerNPCSmoothingRange;
 		Main.teamNamePlateDistance = TeamNamePlateDistance;
+		if (ChangeMusic)
+		{
+			Main.swapMusic = !Main.swapMusic;
+		}
+		ChangeMusic = false;
+
+		Main.recipe = RecipeSorter.Sort(Main.recipe);
+		if (!Main.gameMenu) Recipe.FindRecipes(false);
 	}
 }
 
-public class ServerConfig : ModConfig {
+public class ServerConfig : ModConfig
+{
 	public override ConfigScope Mode => ConfigScope.ServerSide;
 	public static ServerConfig Instance;
 
@@ -88,7 +115,7 @@ public class ServerConfig : ModConfig {
 	[Header("Networking")]
 
 	[DefaultValue(30)]
-	[Range(1, 60)]
+	[Range(0, 60)]
 	[Increment(1)]
 	[Slider]
 	public int NPCStreamSpeed = 30;
@@ -96,20 +123,63 @@ public class ServerConfig : ModConfig {
 
 	[Header("Gameplay")]
 
-    [DefaultValue(false)]
-    public bool EnableLockOn = false;
+	[DefaultValue(false)]
+	public bool EnableLockOn = false;
+
+	[DefaultValue(true)]
+	public bool NerfCritDamage = true;
+
+	[DefaultValue(true)]
+	public bool NerfKnockback = true;
+
+	[DefaultValue(true)]
+	public bool NPCsCantSeeYouThroughWalls = true;
 
 
-	public override void OnChanged() {
-		Main.npcStreamSpeed = NPCStreamSpeed;
+	[Header("Spawning")]
+
+	[DefaultValue(2560)]
+	[Range(1280, 9600)]
+	[Increment(320)]
+	[Slider]
+	public int SpawnRangeX = 2880;
+
+	[DefaultValue(2160)]
+	[Range(720, 5400)]
+	[Increment(180)]
+	[Slider]
+	public int SpawnRangeY = 1620;
+
+	[DefaultValue(300)]
+	[Range(0, 3600)]
+	[Slider]
+	public int SpawnRate = 300;
+
+	[DefaultValue(5)]
+	[Range(0, 100)]
+	[Slider]
+	public int MaxSpawns = 5;
+
+
+	public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message)
+	{
+		return DALib.Auth.IsAdmin(whoAmI, ref message);
 	}
 
-	public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {
-		return DALib.Auth.IsAdmin(whoAmI, ref message);
+	public override void OnLoaded() => UpdateConfig();
+	public override void OnChanged() => UpdateConfig();
+
+	public void UpdateConfig()
+	{
+		Main.npcStreamSpeed = NPCStreamSpeed;
+		DAMod.SetSpawnRange(SpawnRangeX, SpawnRangeY);
+		DAMod.SetSpwanRate(SpawnRate);
+		DAMod.SetMaxSpawns(MaxSpawns);
 	}
 }
 
-public static class Config {
+public static class Config
+{
 	public static ClientConfig Client => ClientConfig.Instance;
 	public static ServerConfig Server => ServerConfig.Instance;
 }

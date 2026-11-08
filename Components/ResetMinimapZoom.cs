@@ -1,4 +1,3 @@
-using MonoMod.RuntimeDetour.HookGen;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent.UI.Minimap;

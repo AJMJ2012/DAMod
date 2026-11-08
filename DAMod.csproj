@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\tModLoader.targets" />
-  <PropertyGroup>
-    <AssemblyName>DAMod</AssemblyName>
-    <TargetFramework>net6.0</TargetFramework>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.5" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="DALib">
-      <HintPath>C:\Users\Ashley\Dropbox\Mods\Terraria\1.4\Mod Sources\DALib\bin\Debug\net6.0\DALib.dll</HintPath>
-    </Reference>
-    <Reference Include="DALib">
-      <HintPath>C:\Users\Ashley\Dropbox\Mods\Terraria\1.4\Mod Sources\_Mine\DALib\bin\Debug\net6.0\DALib.dll</HintPath>
-    </Reference>
-    <Reference Include="FancyLighting">
-      <HintPath>..\..\ModAssemblies\FancyLighting_v0.6.0.dll</HintPath>
-    </Reference>
-    <Reference Include="FancyLighting">
-      <HintPath>..\ModAssemblies\FancyLighting_v0.6.0.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<Import Project="..\tModLoader.targets" />
+	<PropertyGroup>
+		<AssemblyName>DAMod</AssemblyName>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="DALib">
+			<HintPath>..\DALib\bin\Debug\net8.0\DALib.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

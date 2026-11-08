@@ -11,17 +11,24 @@ class AutoSetTeam : ModPlayer
 	bool inGame = false;
 	int team = 0;
 
+	readonly string[] teamName = [
+		"None",
+		"Red",
+		"Green",
+		"Blue",
+		"Yellow",
+		"Pink"
+	];
+
 	// Can't set the team here
 	public override void OnEnterWorld()
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient) return;
 		inGame = true;
 		setTeam = false;
 	}
 
 	public override void PostUpdate()
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient) return;
 		if (inGame && !setTeam)
 		{
 			setTeam = true;
@@ -31,9 +38,9 @@ class AutoSetTeam : ModPlayer
 
 	public void SetTeam(int team)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient) return;
-		if (team > 0)
+		if (Main.netMode == NetmodeID.MultiplayerClient && team > 0)
 		{
+			Main.NewText($"Joining Team: {teamName[team]}", Main.teamColor[team]);
 			Player.team = team;
 			NetMessage.SendData(MessageID.PlayerTeam, -1, -1, null, Main.myPlayer);
 		}
@@ -41,8 +48,7 @@ class AutoSetTeam : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient) return;
-		tag.Add("lastTeam", Player.team);
+		tag.Add("lastTeam", Main.netMode == NetmodeID.MultiplayerClient ? Player.team : team);
 	}
 
 	public override void LoadData(TagCompound tag)

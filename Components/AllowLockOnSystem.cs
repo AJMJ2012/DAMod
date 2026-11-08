@@ -1,6 +1,4 @@
 using Terraria;
-using MonoMod.RuntimeDetour.HookGen;
-using System.Reflection;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 
@@ -31,7 +29,7 @@ class AllowLockOnSystem : ModSystem
 {
 	public override void PostUpdateInput()
 	{
-		if (DAMod.instance != null && DAMod.instance.lockOnKey != null && DAMod.instance.lockOnKey.JustPressed) PlayerInput.Triggers.JustPressed.LockOn = true;
+		if (!Main.gameMenu && DAMod.instance != null && DAMod.instance.lockOnKey != null && DAMod.instance.lockOnKey.JustPressed) PlayerInput.Triggers.JustPressed.LockOn = true;
 		LockOnHelper.ForceUsability = Config.Server.EnableLockOn && Config.Client.EnableLockOn;
 	}
 }

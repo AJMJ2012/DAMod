@@ -21,9 +21,14 @@ Configs: {
 			Tooltip: Shows extended details on stat based tooltips
 		}
 
-		MusicMode: {
+		DefaultMusicMode: {
 			Label: Default Music Mode
 			Tooltip: Only applies on load for now
+		}
+
+		UsingOtherworldMusic: {
+			Label: Using Otherworld Music
+			Tooltip: ""
 		}
 
 		TileLightAbsorption: {
@@ -37,12 +42,17 @@ Configs: {
 		}
 
 		LockOnAllowed: {
-			Label: Allowed by Server
+			Label: Lock On Allowed by Server
 			Tooltip: ""
 		}
 
 		LinkUIScale: {
 			Label: Link UI Scale to Zoom
+			Tooltip: ""
+		}
+
+		ClampUIScale: {
+			Label: Clamp UI Scale to 100%
 			Tooltip: ""
 		}
 
@@ -55,6 +65,16 @@ Configs: {
 			Label: Team Name Plate Distance
 			Tooltip: ""
 		}
+
+		ChangeMusic: {
+			Label: Change Music
+			Tooltip: ""
+		}
+
+		SortRecipes: {
+			Label: Sort Recipes
+			Tooltip: ""
+		}
 	}
 
 	ServerConfig: {
@@ -63,6 +83,7 @@ Configs: {
 		Headers: {
 			Networking: Networking
 			Gameplay: Gameplay
+			Spawning: Spawning Header
 		}
 
 		NPCStreamSpeed: {
@@ -74,14 +95,85 @@ Configs: {
 			Tooltip: Server Only
 			Label: Enable Lock On system for keyboard + mouse
 		}
+
+		SpawnRangeX: {
+			Label: Spawn Range X
+			Tooltip: ""
+		}
+
+		SpawnRangeY: {
+			Label: Spawn Range Y
+			Tooltip: ""
+		}
+
+		SpawnRate: {
+			Label: Spawn Rate
+			Tooltip: ""
+		}
+
+		MaxSpawns: {
+			Label: Max Spawns
+			Tooltip: ""
+		}
+
+		NPCsCantSeeYouThroughWalls: {
+			Label: NPCs Cant See You Through Walls
+			Tooltip: ""
+		}
+
+		NerfCritDamage: {
+			Tooltip: ""
+			Label: Nerf Crit Damage
+		}
+
+		NerfKnockback: {
+			Label: Nerf Knockback
+			Tooltip: ""
+		}
 	}
 
 	MusicMode: {
-		Default.Label: Default
-		Original.Label: Original
-		Otherworld.Label: Otherworld
+		Default: {
+			Label: Default
+			Tooltip: ""
+		}
+
+		Original: {
+			Label: Original
+			Tooltip: ""
+		}
+
+		Otherworld: {
+			Label: Otherworld
+			Tooltip: ""
+		}
+
 		Tooltip: ""
+	}
+
+	RecipeSort: {
+		Tooltip: ""
+
+		No: {
+			Label: No
+			Tooltip: ""
+		}
+
+		Yes: {
+			Label: Yes
+			Tooltip: ""
+		}
+
+		Alternate: {
+			Label: Alternate
+			Tooltip: ""
+		}
 	}
 }
 
-Keybinds.LockOn.DisplayName: Lock On
+Keybinds: {
+	LockOn.DisplayName: Lock On
+	ReloadSound.DisplayName: Reload Sound
+}
+
+Projectiles.FTWUnsafeGrenade.DisplayName: F T W Unsafe Grenade

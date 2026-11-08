@@ -1,4 +1,3 @@
-using MonoMod.RuntimeDetour.HookGen;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -27,8 +26,8 @@ class PreventMovingFavouriteItems : ModSystem
 	// Don't refill from favourited ammo
 	static void Override_ItemSorting_FillAmmoFromInventory(ItemSorting_FillAmmoFromInventory_Delegate ItemSorting_FillAmmoFromInventory)
 	{
-		List<int> list = new();
-		List<int> list2 = new();
+		List<int> list = [];
+		List<int> list2 = [];
 		Item[] inventory = Main.LocalPlayer.inventory;
 		for (int i = 54; i < 58; i++)
 		{
@@ -44,7 +43,7 @@ class PreventMovingFavouriteItems : ModSystem
 				{
 					list.Add(item.type);
 				}
-				typeof(ItemSorting).GetMethod("RefillItemStack", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { inventory, inventory[i], 0, 50 });
+				typeof(ItemSorting).GetMethod("RefillItemStack", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, [inventory, inventory[i], 0, 50]);
 			}
 		}
 		if (list2.Count < 1)
@@ -59,7 +58,7 @@ class PreventMovingFavouriteItems : ModSystem
 				int num = list2[0];
 				list2.Remove(num);
 				Utils.Swap(ref inventory[j], ref inventory[num]);
-				typeof(ItemSorting).GetMethod("RefillItemStack", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { inventory, inventory[num], 0, 50 });
+				typeof(ItemSorting).GetMethod("RefillItemStack", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, [inventory, inventory[num], 0, 50]);
 				if (list2.Count == 0)
 				{
 					break;
@@ -78,7 +77,7 @@ class PreventMovingFavouriteItems : ModSystem
 				int num2 = list2[0];
 				list2.Remove(num2);
 				Utils.Swap(ref inventory[k], ref inventory[num2]);
-				typeof(ItemSorting).GetMethod("RefillItemStack", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { inventory, inventory[num2], 0, 50 });
+				typeof(ItemSorting).GetMethod("RefillItemStack", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, [inventory, inventory[num2], 0, 50]);
 				if (list2.Count == 0)
 				{
 					break;
@@ -99,7 +98,7 @@ class PreventMovingFavouriteItems : ModSystem
 		{
 			Item item = inv[i];
 			if (item.stack >= 1 && item.type == itemToRefill.type && !item.favorited)
-			{
+			{ // <- Changed
 				int num2 = item.stack;
 				if (num2 > num)
 				{
@@ -126,7 +125,7 @@ class PreventMovingFavouriteItems : ModSystem
 		for (int num = slot; num > minimumIndex; num--)
 		{
 			if (inv[num - 1].IsAir && !inv[num].favorited)
-			{
+			{ // <- Changed
 				Utils.Swap(ref inv[num], ref inv[num - 1]);
 			}
 		}

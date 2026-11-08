@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoMod.RuntimeDetour.HookGen;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -25,10 +24,10 @@ class ItemLoader_SortTooltips : ModSystem
 	// Should use IL
 	static List<TooltipLine> Override_ModifyTooltips(ModifyTooltips_Delegate ModifyTooltips, Item item, ref int numTooltips, string[] names, ref string[] text, ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor, int prefixlineIndex)
 	{
-		List<TooltipLine> tooltips = new();
+		List<TooltipLine> tooltips = [];
 		for (int j = 0; j < numTooltips; j++)
 		{
-			TooltipLine tooltip = (TooltipLine)typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, new Type[] { typeof(string), typeof(string) }).Invoke(new object[] { names[j], text[j] });
+			TooltipLine tooltip = (TooltipLine)typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(string)]).Invoke([names[j], text[j]]);
 			tooltip.IsModifier = modifier[j];
 			tooltip.IsModifierBad = badModifier[j];
 			if (j == oneDropLogo)

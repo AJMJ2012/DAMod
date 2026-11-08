@@ -24,10 +24,6 @@ public class FixReuseDelay : ModPlayer
 			}
 		}
 	}
-	public override float UseTimeMultiplier(Item item)
-	{
-		return base.UseTimeMultiplier(item) * base.UseAnimationMultiplier(item) * Player.GetAttackSpeed(item.DamageType);
-	}
 }
 
 public class FixReuseDelayItem : GlobalItem

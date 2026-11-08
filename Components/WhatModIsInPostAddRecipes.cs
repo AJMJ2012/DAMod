@@ -1,4 +1,3 @@
-using MonoMod.RuntimeDetour.HookGen;
 using System;
 using System.Reflection;
 using Terraria.ModLoader;
@@ -29,7 +28,7 @@ class PostAddRecipes : ModSystem
 			try
 			{
 				postAddRecipesMethod.Invoke(mod, Array.Empty<object>());
-				typeof(SystemLoader).GetMethod("PostAddRecipes", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { mod });
+				typeof(SystemLoader).GetMethod("PostAddRecipes", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, [mod]);
 			}
 			catch (Exception ex)
 			{

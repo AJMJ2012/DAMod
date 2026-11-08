@@ -27,7 +27,7 @@ class AutoSwapMusic : ModPlayer
 
 	public void SetMusic()
 	{
-		bool swapMusic = Config.Client.MusicMode == MusicMode.Original && Main.drunkWorld || Config.Client.MusicMode == MusicMode.Otherworld && !Main.drunkWorld;
+		bool swapMusic = (Config.Client.DefaultMusicMode == MusicMode.Original && Main.drunkWorld && !Main.remixWorld) || (Config.Client.DefaultMusicMode == MusicMode.Otherworld && !Main.drunkWorld);
 		if (swapMusic)
 		{
 			typeof(Main).GetField("swapMusic", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, swapMusic);

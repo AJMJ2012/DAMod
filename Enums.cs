@@ -1,5 +1,3 @@
-using Terraria.ModLoader.Config;
-
 namespace DAMod;
 
 public enum MusicMode : int
@@ -17,4 +15,11 @@ public enum TeamName : int
 	Blue,
 	Yellow,
 	Pink
+}
+
+public enum RecipeSort : uint
+{
+	No,
+	Yes,
+	Alternate,
 }

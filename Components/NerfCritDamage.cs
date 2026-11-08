@@ -7,6 +7,9 @@ class NerfCritDamage : GlobalNPC
 {
 	public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
 	{
-		modifiers.CritDamage.Scale(0.75f);
+		if (Config.Server.NerfCritDamage)
+		{
+			modifiers.CritDamage *= 0.75f;
+		}
 	}
 }

@@ -1,6 +1,4 @@
 using Microsoft.Xna.Framework;
-using MonoMod.RuntimeDetour.HookGen;
-using System;
 using System.Reflection;
 using Terraria;
 using Terraria.GameInput;

@@ -1,0 +1,12 @@
+using Terraria;
+using Terraria.ModLoader;
+
+namespace DAMod.Components;
+
+public class ScaleUseTime : ModPlayer
+{
+	public override float UseTimeMultiplier(Item item)
+	{
+		return base.UseTimeMultiplier(item) * base.UseAnimationMultiplier(item) * Player.GetAttackSpeed(item.DamageType);
+	}
+}

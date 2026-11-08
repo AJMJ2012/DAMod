@@ -1,25 +1,24 @@
 ﻿using System.Reflection;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ID;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System;
+using Terraria.ModLoader;
 
 namespace DAMod;
 
 public class DAMod : Mod {
 	public static DAMod instance;
 	public ModKeybind lockOnKey;
+	public ModKeybind reloadSoundEngineKey;
     bool loaded = false;
 
-	public override void Load() {
+	public override void Load()
+	{
 		instance = this;
 		lockOnKey = KeybindLoader.RegisterKeybind(this, "LockOn", "Q");
-        {
-            SetSpawnRange(2560,2160); // x1.5,x2.0
-			SetSpwanRate(300); // x0.5 (x2)
-			SetMaxSpawns(10); // x2
+		{
+            SetSpawnRange(Config.Server.SpawnRangeX, Config.Server.SpawnRangeY);
+			SetSpwanRate(Config.Server.SpawnRate);
+			SetMaxSpawns(Config.Server.MaxSpawns);
 			Main.mapMinimapDefaultScale = 1f;
 			Main.mapOverlayScale = 3f;
 		}
@@ -47,14 +46,12 @@ public class DAMod : Mod {
 	internal static void SetSpawnRange(int sWidth, int sHeight) {
 		typeof(NPC).GetField("sWidth", BindingFlags.Static | BindingFlags.Public).SetValue(null, sWidth);
 		typeof(NPC).GetField("sHeight", BindingFlags.Static | BindingFlags.Public).SetValue(null, sHeight);
-		typeof(NPC).GetField("spawnRangeX", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)((float)(sWidth / 16) * 0.7));
-		typeof(NPC).GetField("spawnRangeY", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)((float)(sHeight / 16) * 0.7));
-		typeof(NPC).GetField("safeRangeX", BindingFlags.Static | BindingFlags.Public).SetValue(null, (int)((float)(sWidth / 16) * 0.52));
-		typeof(NPC).GetField("safeRangeY", BindingFlags.Static | BindingFlags.Public).SetValue(null, (int)((float)(sHeight / 16) * 0.52));
-		typeof(NPC).GetField("activeRangeX", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)((float)sWidth * 2.1));
-		typeof(NPC).GetField("activeRangeY", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)((float)sHeight * 2.1));
-		typeof(NPC).GetField("townRangeX", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, 1920);
-		typeof(NPC).GetField("townRangeY", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, 1080);
+		typeof(NPC).GetField("spawnRangeX", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)(sWidth / 16 * 0.7));
+		typeof(NPC).GetField("spawnRangeY", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)(sHeight / 16 * 0.7));
+		typeof(NPC).GetField("safeRangeX", BindingFlags.Static | BindingFlags.Public).SetValue(null, (int)(sWidth / 16 * 0.52));
+		typeof(NPC).GetField("safeRangeY", BindingFlags.Static | BindingFlags.Public).SetValue(null, (int)(sHeight / 16 * 0.52));
+		typeof(NPC).GetField("activeRangeX", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)(sWidth * 2.1));
+		typeof(NPC).GetField("activeRangeY", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, (int)(sHeight * 2.1));
 	}
 
 	internal static void SetSpwanRate(int num)
