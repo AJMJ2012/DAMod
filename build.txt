@@ -2,6 +2,5 @@
 displayName = Dark Assassin's Mod
 version = 1.2.3
 modReferences = DALib@1.4.4
-weakReferences = FancyLighting
 sortAfter = TerrariaOverhaul
 buildIgnore = Components/bak/*

@@ -17,10 +17,6 @@ class SystemLoader_ModifyLightingBrightness : ModSystem
 	static void Override_ModifyLightingBrightness(ModifyLightingBrightness_Delegate ModifyLightingBrightness, ref float negLight, ref float negLight2)
 	{
 		float b = 1f;
-//		if (ModLoader.HasMod("FancyLighting") && Integrations.FancyLightingIntegration.IsSmooth())
-//		{
-//			b = 0.75f;
-//		}
 		negLight2 *= b - Config.Client.TileLightAbsorption / 100f;
 		ModifyLightingBrightness(ref negLight, ref negLight2);
 	}
